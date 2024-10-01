@@ -1,0 +1,160 @@
+featuref ile
+
+Feature: Hotel Search Functionality in PHP Travels Application
+ 
+	@tag1
+  Scenario Outline: Verify hotel search functionality with various inputs
+    Given the user is on the PHP Travels hotels page
+    When the user enters <Location_Name> as the location
+      And selects Check-In Date <CheckIn_Date>
+      And selects Check-Out Date <CheckOut Date>
+      And selects Number of Rooms <No_of_Rooms>
+      And selects Number of Adults <No_of_Adults>
+      And selects Number of Children <No_of_Children>
+      And selects Child Age <Child_Age>
+      And clicks on Nationality
+      And selects Nationality <Nationality>
+      And clicks the search button
+    Then the user should see <Expected_Result> in the search box
+ 
+  Examples:
+    | Location_Name   | CheckIn_Date | CheckOut_Date | No_of_Rooms  | No_of_Adults  | No_of_Children  | Child_Age | Nationality | Expected_Result                                 |
+    | Dubai           | 1/10/2024    | 4/10/2024     | 1            | 2             | 1               | 4         | UAE         | Hotel results related to the location provided  |
+    | yydsdsvdff      | 29/09/2024   | 1/10/2024     | 1            | 3             | 0               | (null)    | UAE         | Error message in the search box                 |
+    | (null)          | 28/09/2024   | 29/09/2024    | (null)       | (null)        | (null)          | (null)    | (null)      | "Please select an item in the list"             |
+ 
+
+
+
+
+package com.pages.RLL_240Testing_PhpTravels_Hotels;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+
+public class PhpTravels_SearchHotels_lib {
+
+		WebDriver wd;
+	By Hotels = By.linkText("Hotels");
+	By Search_for_best_hotels = By.xpath("//strong[text()=\"Search for best hotels\"]");
+	By Search_By_City = By.id("select2-hotels_city-container");
+	By search_city = By.xpath("(//*[contains(text(),'Dubai')])[6]");
+	By Checkin_calender = By.id("checkin");
+	By Checkin_Date = By.xpath("(//td[text()=\"7\"])[1]");
+	By Checkout_Calender = By.xpath("checkout");
+	By Checkout_Date = By.xpath("(//td[contains(text(),'15')])[2]");
+	By Travellers = By.xpath("//a[@class=\"dropdown-toggle dropdown-btn travellers d-flex align-items-center waves-effect\"]");
+	By Search = By.xpath("//button[contains(@class, 'search_button')]");
+	
+	public void init(WebDriver wd) {
+		this.wd=wd;
+	}
+	
+	public void Launch_PHP_Travels() {
+		wd.get("https://www.phptravels.net/");
+		wd.manage().window().maximize();
+	}
+	public  void second_link() {
+		wd.findElement(Hotels).click();
+	}
+	public void Search_for_best_hotels() {
+		wd.findElement(Search_for_best_hotels).click();
+	}
+	public void Search_By_City() {
+		wd.findElement(Search_By_City).click();
+	}
+	public void searchCity()
+	{
+		wd.findElement(search_city).click();
+	}
+	public void Checkin_calender() {
+		wd.findElement(Checkin_calender).click();
+	}
+	public void Checkin_Date() {
+		wd.findElement(Checkin_Date).click();
+	}
+	public void Checkout_calender() {
+		wd.findElement(Checkout_Calender).click();
+	}
+	public void Checkout_Date() {
+		wd.findElement(Checkout_Date).click();
+	}
+	public void Travellers() {
+		wd.findElement(Travellers).click();
+	}
+	public void Search() {
+		wd.findElement(Search).click();
+	}
+	
+}
+
+
+
+
+
+package RLL_240Testing_PhpTravels_Hotels_StepDefinition;
+
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import com.pages.RLL_240Testing_PhpTravels_Hotels.PhpTravels_SearchHotels_lib;
+import io.cucumber.java.en.*;
+
+public class SearchHotels_StepDefinition {
+
+    WebDriver wd;
+    PhpTravels_SearchHotels_lib searchHotels = new PhpTravels_SearchHotels_lib();
+    
+    public void init(WebDriver wd) {
+		this.wd=wd;
+	}
+    
+    @Given("User launches the PHP Travels website")
+    public void user_launches_the_php_travels_website() {
+        wd = new FirefoxDriver();
+        searchHotels = new PhpTravels_SearchHotels_lib();
+        searchHotels.init(wd);
+        searchHotels.Launch_PHP_Travels();
+    }
+    
+
+    @When("User clicks on Hotels link")
+    public void user_clicks_on_hotels_link() {
+        searchHotels.second_link();
+    }
+
+    @And("User clicks on Search for best hotels")
+    public void user_clicks_on_search_for_best_hotels() {
+        searchHotels.Search_for_best_hotels();
+    }
+
+    @And("User selects city as Dubai")
+    public void user_selects_city_as_dubai() {
+        searchHotels.Search_By_City();
+        searchHotels.searchCity();
+    }
+
+    @And("User selects check-in date")
+    public void user_selects_check_in_date() {
+        searchHotels.Checkin_calender();
+        searchHotels.Checkin_Date();
+    }
+
+    @And("User selects check-out date")
+    public void user_selects_check_out_date() {
+        searchHotels.Checkout_calender();
+        searchHotels.Checkout_Date();
+    }
+
+    @And("User selects number of travellers")
+    public void user_selects_number_of_travellers() {
+        searchHotels.Travellers();
+    }
+
+    @Then("User clicks on Search button")
+    public void user_clicks_on_search_button() {
+        searchHotels.Search();
+        wd.quit();
+    }
+}
+
+
